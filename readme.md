@@ -21,6 +21,7 @@ The execution schedule is controlled by the `%FileShareSpaceMonitoringCron%` env
 
 Monitoring Reader on the scope covered by the function (eg. subscription or management group)
 Permissions can be given to the function managed identity
+Refer to [this page] (https://techcommunity.microsoft.com/t5/azure-integration-services-blog/grant-graph-api-permission-to-managed-identity-object/ba-p/2792127) for role assignment to Managed Identity
 
 ---
 
@@ -48,3 +49,11 @@ Permissions can be given to the function managed identity
 
 **Note:**  
 If you need to test the functions manually you can invoke the HTTP trigger of each function
+
+## Deploy on Azure Function
+
+1. Create an Azure Function with an Application Insights resource. Function runtime must be .NET 8 Isolated. Tier can be Consumption, Flex Consumption or Premium.
+2. Setup deployment to point to the GitHub repository of this project: https://github.com/lucapisano/Az.Monitor.Extensions
+3. Set the environment variables for the NCRON expressions:
+   - `%FileShareSpaceMonitoringCron%`
+   - `%GraphSecretsMonitoringCron%`
