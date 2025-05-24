@@ -13,21 +13,21 @@ using System.Net;
 
 namespace Az.Monitor.Extensions
 {
-    public class FileShareSpaceMonitoring
+    public class FileShareSpace
     {
-        private readonly ILogger<FileShareSpaceMonitoring> _logger;
+        private readonly ILogger<FileShareSpace> _logger;
         private readonly IServiceProvider _sp;
         private readonly IConfiguration _config;
         private readonly IOptions<MonitoringFunctionOptions> _opt;
 
-        public FileShareSpaceMonitoring(ILogger<FileShareSpaceMonitoring> logger, IServiceProvider sp)
+        public FileShareSpace(ILogger<FileShareSpace> logger, IServiceProvider sp)
         {
             _logger = logger;
             _sp = sp;
             _config = sp.GetRequiredService<IConfiguration>();
             _opt = sp.GetRequiredService<IOptions<MonitoringFunctionOptions>>();
         }
-        [Function("FileShareSpaceMonitoringHttp")]
+        [Function("FileShareSpaceHttp")]
         public async Task<HttpResponseData> RunHttp([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -48,12 +48,12 @@ namespace Az.Monitor.Extensions
             }
             return response;
         }
-        [Function("FileShareSpaceMonitoringTimer")]
-        public async Task RunTimer([TimerTrigger("%FileShareSpaceMonitoringCron%", RunOnStartup = false, UseMonitor = true)] TimerInfo myTimer)
+        [Function("FileShareSpaceTimer")]
+        public async Task RunTimer([TimerTrigger("%FileShareSpaceCron%", RunOnStartup = false, UseMonitor = true)] TimerInfo myTimer)
         {
-            _logger.LogInformation($"FileShareSpaceMonitoringTimer Started at: {DateTime.Now}. Last run time: {myTimer.ScheduleStatus?.Last}");
+            _logger.LogInformation($"FileShareSpaceTimer Started at: {DateTime.Now}. Last run time: {myTimer.ScheduleStatus?.Last}");
             await RunAsync();
-            _logger?.LogInformation($"FileShareSpaceMonitoringTimer Next load time: {myTimer.ScheduleStatus?.Next}");
+            _logger?.LogInformation($"FileShareSpaceTimer Next load time: {myTimer.ScheduleStatus?.Next}");
         }
         async Task RunAsync(string storageAccountId = null)
         {

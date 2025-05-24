@@ -11,21 +11,21 @@ using System.Net;
 
 namespace Az.Monitor.Extensions
 {
-    public class GraphSecretsMonitoring
+    public class GraphSecrets
     {
-        private readonly ILogger<GraphSecretsMonitoring> _logger;
+        private readonly ILogger<GraphSecrets> _logger;
         private readonly IServiceProvider _sp;
         private readonly IConfiguration _config;
         private readonly IOptions<MonitoringFunctionOptions> _opt;
 
-        public GraphSecretsMonitoring(ILogger<GraphSecretsMonitoring> logger, IServiceProvider sp)
+        public GraphSecrets(ILogger<GraphSecrets> logger, IServiceProvider sp)
         {
             _logger = logger;
             _sp = sp;
             _config = sp.GetRequiredService<IConfiguration>();
             _opt = sp.GetRequiredService<IOptions<MonitoringFunctionOptions>>();
         }
-        [Function("GraphSecretsMonitoringHttp")]
+        [Function("GraphSecretsHttp")]
         public async Task<HttpResponseData> RunHttp([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -41,12 +41,12 @@ namespace Az.Monitor.Extensions
             }
             return response;
         }
-        [Function("GraphSecretsMonitoringTimer")]
-        public async Task RunTimer([TimerTrigger("%GraphSecretsMonitoringCron%", RunOnStartup = false, UseMonitor = true)] TimerInfo myTimer)
+        [Function("GraphSecretsTimer")]
+        public async Task RunTimer([TimerTrigger("%GraphSecretsCron%", RunOnStartup = false, UseMonitor = true)] TimerInfo myTimer)
         {
-            _logger.LogInformation($"GraphSecretsMonitoring Started at: {DateTime.Now}. Last run time: {myTimer.ScheduleStatus?.Last}");
+            _logger.LogInformation($"GraphSecrets Started at: {DateTime.Now}. Last run time: {myTimer.ScheduleStatus?.Last}");
             await RunAsync();
-            _logger?.LogInformation($"GraphSecretsMonitoring Next load time: {myTimer.ScheduleStatus?.Next}");
+            _logger?.LogInformation($"GraphSecrets Next load time: {myTimer.ScheduleStatus?.Next}");
         }
         async Task<List<TOut>> GetFromGraphAsync<TOut, TResponse>(GraphServiceClient graphServiceClient, TResponse? collectionResponse)
             where TResponse : Microsoft.Kiota.Abstractions.Serialization.IParsable, Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder, new()
