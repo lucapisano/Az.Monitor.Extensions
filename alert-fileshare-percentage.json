@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "alertRuleName": {
+      "type": "string",
+      "defaultValue": "FileShareSpaceUsageAlert"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "targetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the monitored resource (e.g., Storage Account)."
+      }
+    },
+    "actionGroupId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Action Group to notify."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[parameters('alertRuleName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "description": "Alert when file share space usage exceeds 85% for any shareId.",
+        "severity": 2,
+        "enabled": true,
+        "scopes": [
+          "[parameters('targetResourceId')]"
+        ],
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT5M",
+        "criteria": {
+          "allOf": [
+            {
+              "criterionType": "StaticThresholdCriterion",
+              "name": "HighFileShareSpaceUsage",
+              "metricName": "FileShareSpaceUsagePercent",
+              "metricNamespace": "CustomMetrics",
+              "operator": "GreaterThan",
+              "threshold": 85,
+              "timeAggregation": "Average",
+              "dimensions": [
+                {
+                  "name": "shareId",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "autoMitigate": true,
+        "actions": [
+          {
+            "actionGroupId": "[parameters('actionGroupId')]"
+          }
+        ]
+      }
+    }
+  ]
+}

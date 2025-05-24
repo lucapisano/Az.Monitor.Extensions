@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Az.Monitor.Extensions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7258",
+      "launchBrowser": false
+    }
+  }
+}
