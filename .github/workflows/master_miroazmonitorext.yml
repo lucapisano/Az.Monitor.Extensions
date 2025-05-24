@@ -3,11 +3,11 @@
 
 name: Build and deploy dotnet core project to Azure Function App - miroazmonitorext
 
-#on:
-#  push:
-#    branches:
-#      - master
-#  workflow_dispatch:
+on:
+  #push:
+  #  branches:
+  #    - master
+  workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
