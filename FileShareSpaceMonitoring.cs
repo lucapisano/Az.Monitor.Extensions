@@ -48,7 +48,7 @@ namespace Az.Monitor.Extensions
             }
             return response;
         }
-        [Function("FileShareSpaceMonitoringHttp")]
+        [Function("FileShareSpaceMonitoringTimer")]
         public async Task RunTimer([TimerTrigger("%FileShareSpaceMonitoringCron%", RunOnStartup = false, UseMonitor = true)] TimerInfo myTimer)
         {
             _logger.LogInformation($"FileShareSpaceMonitoringTimer Started at: {DateTime.Now}. Last run time: {myTimer.ScheduleStatus?.Last}");
